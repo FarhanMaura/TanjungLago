@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Statistik Desa - Desa Tanjung Lago</title>
+    <link rel="stylesheet" href="/public/css/style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="nav-container">
+          <div class="nav-logo">
+            <a href="/" class="logo-link">
+              <div class="logo-icon">
+                <i class="fas fa-tree"></i>
+              </div>
+              <div class="logo-text">
+                <h2>Desa Tanjung Lago</h2>
+                <span>Kabupaten Banyuasin</span>
+              </div>
+            </a>
+          </div>
+          <ul class="nav-menu">
+            <li class="nav-item">
+              <a href="/" class="nav-link">
+                <i class="fas fa-home"></i>
+                Beranda
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/about.html" class="nav-link">
+                <i class="fas fa-info-circle"></i>
+                Tentang
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/gallery.html" class="nav-link">
+                <i class="fas fa-images"></i>
+                Galeri
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/statistics.html" class="nav-link active">
+                <i class="fas fa-chart-bar"></i>
+                Statistik
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/contact.html" class="nav-link">
+                <i class="fas fa-envelope"></i>
+                Kontak
+              </a>
+            </li>
+          </ul>
+          <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <section class="page-header">
+      <div class="container">
+        <h1>Statistik Desa</h1>
+        <p>Data terkini perkembangan dan kondisi Desa Tanjung Lago</p>
+      </div>
+    </section>
+
+    <section class="statistics-section">
+      <div class="container">
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 class="stat-number" id="totalPenduduk">5,483</h3>
+            <p class="stat-label">Total Penduduk</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-home"></i>
+            </div>
+            <h3 class="stat-number" id="totalKK">1,278</h3>
+            <p class="stat-label">Kepala Keluarga</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-male"></i>
+            </div>
+            <h3 class="stat-number" id="pendudukLaki">2,750</h3>
+            <p class="stat-label">Penduduk Laki-laki</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-female"></i>
+            </div>
+            <h3 class="stat-number" id="pendudukPerempuan">2,733</h3>
+            <p class="stat-label">Penduduk Perempuan</p>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+          <div class="chart-container">
+            <h3>Pendapatan Rata-rata per Sektor</h3>
+            <canvas id="incomeChart"></canvas>
+          </div>
+          <div class="chart-container">
+            <h3>Distribusi Mata Pencaharian</h3>
+            <canvas id="occupationChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Detailed Statistics -->
+        <div class="detailed-stats">
+          <h3>Data Detail Kependudukan</h3>
+          <div class="stats-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Kategori</th>
+                  <th>Jumlah</th>
+                  <th>Persentase</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Penduduk Usia Produktif (15-64 tahun)</td>
+                  <td>3,850</td>
+                  <td>70.2%</td>
+                </tr>
+                <tr>
+                  <td>Penduduk Usia Muda (0-14 tahun)</td>
+                  <td>1,200</td>
+                  <td>21.9%</td>
+                </tr>
+                <tr>
+                  <td>Penduduk Lansia (65+ tahun)</td>
+                  <td>433</td>
+                  <td>7.9%</td>
+                </tr>
+                <tr>
+                  <td>Penduduk dengan Pendidikan SMA/Sederajat</td>
+                  <td>2,100</td>
+                  <td>38.3%</td>
+                </tr>
+                <tr>
+                  <td>Penduduk dengan Pendidikan Sarjana</td>
+                  <td>650</td>
+                  <td>11.9%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <div class="footer-logo">
+              <i class="fas fa-tree"></i>
+              <div>
+                <h3>Desa Tanjung Lago</h3>
+                <p>Kabupaten Banyuasin</p>
+              </div>
+            </div>
+            <p class="footer-description">
+              Desa yang kaya akan sejarah, budaya, dan potensi ekonomi di
+              Palembang, Sumatera Selatan. Berdiri sejak 1367 M dengan
+              masyarakat yang harmonis dan produktif.
+            </p>
+            <div class="social-links">
+              <a href="#" class="social-link" title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-link" title="Instagram">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" class="social-link" title="YouTube">
+                <i class="fab fa-youtube"></i>
+              </a>
+              <a href="#" class="social-link" title="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="footer-section">
+            <h4>Tautan Cepat</h4>
+            <ul class="footer-links">
+              <li><a href="/">Beranda</a></li>
+              <li><a href="/about.html">Tentang Desa</a></li>
+              <li><a href="/gallery.html">Galeri Foto</a></li>
+              <li><a href="/statistics.html">Statistik</a></li>
+              <li><a href="/contact.html">Kontak</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Informasi</h4>
+            <ul class="footer-links">
+              <li><a href="/about.html#sejarah">Sejarah Desa</a></li>
+              <li><a href="/about.html#potensi">Potensi Desa</a></li>
+              <li><a href="/statistics.html">Data Kependudukan</a></li>
+              <li><a href="/gallery.html">Kegiatan Masyarakat</a></li>
+              <li><a href="/contact.html">Lokasi Kantor Desa</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Kontak Kami</h4>
+            <div class="contact-info">
+              <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span
+                  >Desa Tanjung Lago, Kec. Tanjung Lago, Kab. Banyuasin,
+                  Sumatera Selatan</span
+                >
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <span>+62 383-3455-9661</span>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <span>firlyirsyandi12@gmail.com</span>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-clock"></i>
+                <span>Senin - Jumat: 08:00 - 16:00 WIB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="footer-bottom-content">
+            <p>
+              &copy; 2025 DIBUAT OLEH MUHAMAD FARHAN MAURA PENJOKI TERMALAS DI
+              BUMI :V
+            </p>
+            <div class="footer-bottom-links">
+              <a href="#">Kebijakan Privasi</a>
+              <a href="#">Syarat & Ketentuan</a>
+              <a href="#">Peta Situs</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/public/js/main.js"></script>
+    <script src="/public/js/statistics.js"></script>
+  </body>
+</html>

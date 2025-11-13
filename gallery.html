@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galeri Foto - Desa Tanjung Lago</title>
+    <link rel="stylesheet" href="/public/css/style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="nav-container">
+          <div class="nav-logo">
+            <a href="/" class="logo-link">
+              <div class="logo-icon">
+                <i class="fas fa-tree"></i>
+              </div>
+              <div class="logo-text">
+                <h2>Desa Tanjung Lago</h2>
+                <span>Kabupaten Banyuasin</span>
+              </div>
+            </a>
+          </div>
+          <ul class="nav-menu">
+            <li class="nav-item">
+              <a href="/" class="nav-link">
+                <i class="fas fa-home"></i>
+                Beranda
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/about.html" class="nav-link">
+                <i class="fas fa-info-circle"></i>
+                Tentang
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/gallery.html" class="nav-link active">
+                <i class="fas fa-images"></i>
+                Galeri
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/statistics.html" class="nav-link">
+                <i class="fas fa-chart-bar"></i>
+                Statistik
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/contact.html" class="nav-link">
+                <i class="fas fa-envelope"></i>
+                Kontak
+              </a>
+            </li>
+          </ul>
+          <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <section class="page-header">
+      <div class="container">
+        <h1>Galeri Foto Desa</h1>
+        <p>Dokumentasi kegiatan dan keindahan Desa Tanjung Lago</p>
+      </div>
+    </section>
+
+    <section class="gallery-section">
+      <div class="container">
+        <div class="gallery-controls">
+          <button class="filter-btn active" data-filter="all">Semua</button>
+          <button class="filter-btn" data-filter="wisata">Wisata</button>
+          <button class="filter-btn" data-filter="aktivitas">Aktivitas</button>
+          <button class="filter-btn" data-filter="produk">Produk Lokal</button>
+          <button class="filter-btn" data-filter="infrastruktur">
+            Infrastruktur
+          </button>
+        </div>
+
+        <div class="gallery-grid" id="galleryGrid">
+          <!-- Photos will be loaded by JavaScript -->
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+          <h3><i class="fas fa-cloud-upload-alt"></i> Tambah Foto Baru</h3>
+          <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="photoInput">Pilih Foto</label>
+                <input type="file" id="photoInput" accept="image/*" required />
+              </div>
+              <div class="form-group">
+                <label for="photoTitle">Judul Foto</label>
+                <input
+                  type="text"
+                  id="photoTitle"
+                  placeholder="Masukkan judul foto"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="photoCategory">Kategori</label>
+                <select id="photoCategory" required>
+                  <option value="">Pilih Kategori</option>
+                  <option value="wisata">Wisata</option>
+                  <option value="aktivitas">Aktivitas</option>
+                  <option value="produk">Produk Lokal</option>
+                  <option value="infrastruktur">Infrastruktur</option>
+                </select>
+              </div>
+              <button type="submit" class="upload-btn">
+                <i class="fas fa-upload"></i> Upload Foto
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal untuk gambar galeri -->
+    <div id="imageModal" class="modal">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="modalImage" />
+      <div id="modalCaption"></div>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <div class="footer-logo">
+              <i class="fas fa-tree"></i>
+              <div>
+                <h3>Desa Tanjung Lago</h3>
+                <p>Kabupaten Banyuasin</p>
+              </div>
+            </div>
+            <p class="footer-description">
+              Desa yang kaya akan sejarah, budaya, dan potensi ekonomi di
+              Palembang, Sumatera Selatan. Berdiri sejak 1367 M dengan
+              masyarakat yang harmonis dan produktif.
+            </p>
+            <div class="social-links">
+              <a href="#" class="social-link" title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-link" title="Instagram">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" class="social-link" title="YouTube">
+                <i class="fab fa-youtube"></i>
+              </a>
+              <a href="#" class="social-link" title="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="footer-section">
+            <h4>Tautan Cepat</h4>
+            <ul class="footer-links">
+              <li><a href="/">Beranda</a></li>
+              <li><a href="/about.html">Tentang Desa</a></li>
+              <li><a href="/gallery.html">Galeri Foto</a></li>
+              <li><a href="/statistics.html">Statistik</a></li>
+              <li><a href="/contact.html">Kontak</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Informasi</h4>
+            <ul class="footer-links">
+              <li><a href="/about.html#sejarah">Sejarah Desa</a></li>
+              <li><a href="/about.html#potensi">Potensi Desa</a></li>
+              <li><a href="/statistics.html">Data Kependudukan</a></li>
+              <li><a href="/gallery.html">Kegiatan Masyarakat</a></li>
+              <li><a href="/contact.html">Lokasi Kantor Desa</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Kontak Kami</h4>
+            <div class="contact-info">
+              <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span
+                  >Desa Tanjung Lago, Kec. Tanjung Lago, Kab. Banyuasin,
+                  Sumatera Selatan</span
+                >
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <span>+62 383-3455-9661</span>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <span>firlyirsyandi12@gmail.com</span>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-clock"></i>
+                <span>Senin - Jumat: 08:00 - 16:00 WIB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="footer-bottom-content">
+            <p>
+              &copy; 2025 DIBUAT OLEH MUHAMAD FARHAN MAURA PENJOKI TERMALAS DI
+              BUMI :V
+            </p>
+            <div class="footer-bottom-links">
+              <a href="#">Kebijakan Privasi</a>
+              <a href="#">Syarat & Ketentuan</a>
+              <a href="#">Peta Situs</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/public/js/main.js"></script>
+    <script src="/public/js/gallery.js"></script>
+  </body>
+</html>

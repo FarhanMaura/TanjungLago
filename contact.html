@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kontak - Desa Tanjung Lago</title>
+    <link rel="stylesheet" href="/public/css/style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="nav-container">
+          <div class="nav-logo">
+            <a href="/" class="logo-link">
+              <div class="logo-icon">
+                <i class="fas fa-tree"></i>
+              </div>
+              <div class="logo-text">
+                <h2>Desa Tanjung Lago</h2>
+                <span>Kabupaten Banyuasin</span>
+              </div>
+            </a>
+          </div>
+          <ul class="nav-menu">
+            <li class="nav-item">
+              <a href="/" class="nav-link">
+                <i class="fas fa-home"></i>
+                Beranda
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/about.html" class="nav-link">
+                <i class="fas fa-info-circle"></i>
+                Tentang
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/gallery.html" class="nav-link">
+                <i class="fas fa-images"></i>
+                Galeri
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/statistics.html" class="nav-link">
+                <i class="fas fa-chart-bar"></i>
+                Statistik
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/contact.html" class="nav-link active">
+                <i class="fas fa-envelope"></i>
+                Kontak
+              </a>
+            </li>
+          </ul>
+          <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <section class="page-header">
+      <div class="container">
+        <h1>Hubungi Kami</h1>
+        <p>
+          Silakan hubungi kami untuk informasi lebih lanjut tentang Desa Tanjung
+          Lago
+        </p>
+      </div>
+    </section>
+
+    <section class="contact-section">
+      <div class="container">
+        <div class="contact-grid">
+          <div class="contact-info">
+            <h3>Informasi Kontak</h3>
+            <div class="contact-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <div>
+                <h4>Alamat Kantor Desa</h4>
+                <p>
+                  Desa Tanjung Lago, Kec. Tanjung Lago<br />Kab. Banyuasin,
+                  Sumatera Selatan
+                </p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-phone"></i>
+              <div>
+                <h4>Telepon/WhatsApp</h4>
+                <p>+62 838-3455-9661</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-envelope"></i>
+              <div>
+                <h4>Email</h4>
+                <p>firlyirsyandi12@gmail.com</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-clock"></i>
+              <div>
+                <h4>Jam Operasional</h4>
+                <p>
+                  Senin - Jumat: 08:00 - 16:00 WIB<br />Sabtu: 08:00 - 14:00 WIB
+                </p>
+              </div>
+            </div>
+
+            <!-- Quick Action Buttons - SUDAH DIPERBAIKI -->
+            <div class="quick-actions">
+              <h4>Hubungi Langsung</h4>
+              <div class="action-buttons">
+                <a
+                  href="https://wa.me/6283834559661?text=Halo%20Admin%20Desa%20Tanjung%20Lago,%20saya%20ingin%20bertanya..."
+                  target="_blank"
+                  class="whatsapp-btn"
+                >
+                  <i class="fab fa-whatsapp"></i>
+                  Chat WhatsApp
+                </a>
+                <a href="tel:+6283834559661" class="call-btn">
+                  <i class="fas fa-phone"></i>
+                  Telepon Langsung
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-form">
+            <h3>Kirim Pesan via WhatsApp</h3>
+            <p class="form-description">
+              Isi form berikut dan pesan akan langsung dikirim ke WhatsApp admin
+              desa
+            </p>
+
+            <form id="messageForm">
+              <div class="form-group">
+                <label for="name">Nama Lengkap *</label>
+                <input
+                  type="text"
+                  id="name"
+                  placeholder="Masukkan nama lengkap"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="phone">Nomor WhatsApp *</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  placeholder="Contoh: 081234567890"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="subject">Subjek Pesan *</label>
+                <select id="subject" required>
+                  <option value="">Pilih subjek pesan</option>
+                  <option value="Informasi Umum">Informasi Umum Desa</option>
+                  <option value="Administrasi">Pelayanan Administrasi</option>
+                  <option value="UMKM">Informasi UMKM & Produk</option>
+                  <option value="Wisata">Informasi Wisata</option>
+                  <option value="Pengaduan">Pengaduan Masyarakat</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="message">Isi Pesan *</label>
+                <textarea
+                  id="message"
+                  rows="5"
+                  placeholder="Tulis pesan Anda di sini..."
+                  required
+                ></textarea>
+              </div>
+
+              <div class="form-info">
+                <i class="fas fa-info-circle"></i>
+                <span>Pesan akan dikirim ke WhatsApp admin desa</span>
+              </div>
+
+              <button type="submit" class="submit-btn">
+                <i class="fab fa-whatsapp"></i>
+                Kirim via WhatsApp
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section">
+      <div class="container">
+        <h3>Lokasi Desa Tanjung Lago</h3>
+        <div class="map-container">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3985.493024336725!2d104.67952451085476!3d-2.6681376386872486!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e3b410044748a4f%3A0x5098a500abca69ce!2sDesa.%20Tanjung%20lago!5e0!3m2!1sid!2sid!4v1763017609929!5m2!1sid!2sid"
+            width="100%"
+            height="400"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          >
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <div class="footer-logo">
+              <i class="fas fa-tree"></i>
+              <div>
+                <h3>Desa Tanjung Lago</h3>
+                <p>Kabupaten Banyuasin</p>
+              </div>
+            </div>
+            <p class="footer-description">
+              Desa yang kaya akan sejarah, budaya, dan potensi ekonomi di
+              Palembang, Sumatera Selatan. Berdiri sejak 1367 M dengan
+              masyarakat yang harmonis dan produktif.
+            </p>
+            <div class="social-links">
+              <a href="#" class="social-link" title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-link" title="Instagram">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" class="social-link" title="YouTube">
+                <i class="fab fa-youtube"></i>
+              </a>
+              <a href="#" class="social-link" title="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="footer-section">
+            <h4>Tautan Cepat</h4>
+            <ul class="footer-links">
+              <li><a href="/">Beranda</a></li>
+              <li><a href="/about.html">Tentang Desa</a></li>
+              <li><a href="/gallery.html">Galeri Foto</a></li>
+              <li><a href="/statistics.html">Statistik</a></li>
+              <li><a href="/contact.html">Kontak</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Informasi</h4>
+            <ul class="footer-links">
+              <li><a href="/about.html#sejarah">Sejarah Desa</a></li>
+              <li><a href="/about.html#potensi">Potensi Desa</a></li>
+              <li><a href="/statistics.html">Data Kependudukan</a></li>
+              <li><a href="/gallery.html">Kegiatan Masyarakat</a></li>
+              <li><a href="/contact.html">Lokasi Kantor Desa</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Kontak Kami</h4>
+            <div class="contact-info">
+              <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span
+                  >Desa Tanjung Lago, Kec. Tanjung Lago, Kab. Banyuasin,
+                  Sumatera Selatan</span
+                >
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <span>+62 838-3455-9661</span>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <span>firlyirsyandi12@gmail.com</span>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-clock"></i>
+                <span>Senin - Jumat: 08:00 - 16:00 WIB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="footer-bottom-content">
+            <p>
+              &copy; 2025 DIBUAT OLEH MUHAMAD FARHAN MAURA PENJOKI TERMALAS DI
+              BUMI :V
+            </p>
+            <div class="footer-bottom-links">
+              <a href="#">Kebijakan Privasi</a>
+              <a href="#">Syarat & Ketentuan</a>
+              <a href="#">Peta Situs</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/public/js/main.js"></script>
+    <script src="/public/js/contact.js"></script>
+  </body>
+</html>

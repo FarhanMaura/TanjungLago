@@ -1,0 +1,193 @@
+<header>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="/" class="logo-link">
+          <div class="logo-icon">
+            <i class="fas fa-tree"></i>
+          </div>
+          <div class="logo-text">
+            <h2>Desa Tanjung Lago</h2>
+            <span>Kabupaten Banyuasin</span>
+          </div>
+        </a>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="/" class="nav-link">
+            <i class="fas fa-home"></i>
+            Beranda
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/about.html" class="nav-link">
+            <i class="fas fa-info-circle"></i>
+            Tentang
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/gallery.html" class="nav-link">
+            <i class="fas fa-images"></i>
+            Galeri
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/statistics.html" class="nav-link">
+            <i class="fas fa-chart-bar"></i>
+            Statistik
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/contact.html" class="nav-link">
+            <i class="fas fa-envelope"></i>
+            Kontak
+          </a>
+        </li>
+      </ul>
+      <div class="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .navbar {
+    background: linear-gradient(135deg, #2c5530, #1e3a23);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+  }
+
+  .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+  }
+
+  .logo-icon {
+    font-size: 2rem;
+    margin-right: 10px;
+    color: #a2d729;
+  }
+
+  .logo-text h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    line-height: 1.2;
+  }
+
+  .logo-text span {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    display: block;
+  }
+
+  .nav-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-item {
+    margin-left: 1.5rem;
+  }
+
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-link:hover {
+    background-color: rgba(162, 215, 41, 0.2);
+    color: #a2d729;
+    transform: translateY(-2px);
+  }
+
+  .nav-link.active {
+    background-color: #a2d729;
+    color: #2c5530;
+  }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  .bar {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 3px 0;
+    transition: 0.3s;
+    border-radius: 2px;
+  }
+
+  /* Mobile Styles */
+  @media (max-width: 768px) {
+    .hamburger {
+      display: flex;
+    }
+
+    .nav-menu {
+      position: fixed;
+      left: -100%;
+      top: 80px;
+      flex-direction: column;
+      background: linear-gradient(135deg, #2c5530, #1e3a23);
+      width: 100%;
+      text-align: center;
+      transition: 0.3s;
+      box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+      padding: 20px 0;
+    }
+
+    .nav-menu.active {
+      left: 0;
+    }
+
+    .nav-item {
+      margin: 0;
+      width: 100%;
+    }
+
+    .nav-link {
+      padding: 15px;
+      justify-content: center;
+      border-radius: 0;
+    }
+
+    .logo-text h2 {
+      font-size: 1.1rem;
+    }
+
+    .logo-text span {
+      font-size: 0.7rem;
+    }
+  }
+</style>
