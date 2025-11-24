@@ -1,5 +1,5 @@
-// Gallery functionality
 let galleryData = [];
+let currentDeleteId = null;
 
 document.addEventListener("DOMContentLoaded", function () {
   loadGallery();
@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
   initModal();
 });
 
-// Load gallery images
 async function loadGallery() {
   try {
     const response = await fetch("/api/photos");
@@ -19,7 +18,6 @@ async function loadGallery() {
     displayGallery("all");
   } catch (error) {
     console.error("Error loading gallery:", error);
-    // Fallback data
     galleryData = [
       {
         id: 1,
@@ -50,7 +48,6 @@ async function loadGallery() {
   }
 }
 
-// Initialize gallery filters
 function initGalleryFilters() {
   document.querySelectorAll(".filter-btn").forEach((button) => {
     button.addEventListener("click", () => {
@@ -64,7 +61,6 @@ function initGalleryFilters() {
   });
 }
 
-// Display gallery based on filter
 function displayGallery(filter) {
   const galleryGrid = document.getElementById("galleryGrid");
   if (!galleryGrid) return;
@@ -96,16 +92,20 @@ function displayGallery(filter) {
             <div class="gallery-item-overlay">
                 <h4>${item.title}</h4>
                 <span>${item.category}</span>
-                <button class="view-btn" onclick="openModal('${item.url}', '${item.title}')" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s;">
-                    <i class="fas fa-expand" style="color: #2c5530;"></i>
-                </button>
+                <div class="gallery-actions">
+                    <button class="view-btn" onclick="openModal('${item.url}', '${item.title}')" title="Lihat Foto">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                    <button class="delete-btn" onclick="openDeleteModal(${item.id})" title="Hapus Foto">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
             </div>
         `;
     galleryGrid.appendChild(galleryItem);
   });
 }
 
-// Initialize upload form
 function initUploadForm() {
   const uploadForm = document.getElementById("uploadForm");
   if (uploadForm) {
@@ -122,7 +122,6 @@ function initUploadForm() {
         return;
       }
 
-      // Show loading state
       const submitBtn = uploadForm.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerHTML;
       submitBtn.innerHTML =
@@ -143,7 +142,7 @@ function initUploadForm() {
           const result = await response.json();
           showNotification("Foto berhasil diupload!", "success");
           uploadForm.reset();
-          loadGallery(); // Reload gallery
+          loadGallery();
         } else {
           const error = await response.json();
           showNotification("Error uploading photo: " + error.error, "error");
@@ -152,7 +151,6 @@ function initUploadForm() {
         console.error("Error:", error);
         showNotification("Error uploading photo: " + error.message, "error");
       } finally {
-        // Reset button state
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
       }
@@ -160,7 +158,6 @@ function initUploadForm() {
   }
 }
 
-// Initialize modal
 function initModal() {
   const modal = document.getElementById("imageModal");
   const closeBtn = document.querySelector(".close");
@@ -176,16 +173,16 @@ function initModal() {
       }
     });
 
-    // Close on ESC key
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         closeModal();
       }
     });
   }
+
+  initDeleteModal();
 }
 
-// Modal functionality
 function openModal(src, title) {
   const modal = document.getElementById("imageModal");
   const modalImg = document.getElementById("modalImage");
@@ -195,25 +192,89 @@ function openModal(src, title) {
     modal.style.display = "block";
     modalImg.src = src;
     modalCaption.innerHTML = `<h3>${title}</h3>`;
-
-    // Prevent body scroll when modal is open
     document.body.style.overflow = "hidden";
   }
 }
 
-// Close modal
 function closeModal() {
   const modal = document.getElementById("imageModal");
   if (modal) {
     modal.style.display = "none";
-    // Restore body scroll
     document.body.style.overflow = "auto";
   }
 }
 
-// Show notification
+function openDeleteModal(photoId) {
+  currentDeleteId = photoId;
+  const deleteModal = document.getElementById("deleteModal");
+  if (deleteModal) {
+    deleteModal.style.display = "block";
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeDeleteModal() {
+  const deleteModal = document.getElementById("deleteModal");
+  if (deleteModal) {
+    deleteModal.style.display = "none";
+    document.body.style.overflow = "auto";
+    currentDeleteId = null;
+  }
+}
+
+async function deletePhoto(photoId) {
+  try {
+    const response = await fetch(`/api/photos/${photoId}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      showNotification("Foto berhasil dihapus!", "success");
+      loadGallery();
+    } else {
+      const error = await response.json();
+      showNotification("Error menghapus foto: " + error.error, "error");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    showNotification("Error menghapus foto: " + error.message, "error");
+  }
+}
+
+function initDeleteModal() {
+  const deleteModal = document.getElementById("deleteModal");
+  const confirmDelete = document.getElementById("confirmDelete");
+  const cancelDelete = document.getElementById("cancelDelete");
+
+  if (confirmDelete) {
+    confirmDelete.addEventListener("click", () => {
+      if (currentDeleteId) {
+        deletePhoto(currentDeleteId);
+      }
+      closeDeleteModal();
+    });
+  }
+
+  if (cancelDelete) {
+    cancelDelete.addEventListener("click", closeDeleteModal);
+  }
+
+  if (deleteModal) {
+    window.addEventListener("click", (e) => {
+      if (e.target === deleteModal) {
+        closeDeleteModal();
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && deleteModal.style.display === "block") {
+        closeDeleteModal();
+      }
+    });
+  }
+}
+
 function showNotification(message, type = "info") {
-  // Remove existing notification
   const existingNotification = document.querySelector(".notification");
   if (existingNotification) {
     existingNotification.remove();
@@ -245,7 +306,6 @@ function showNotification(message, type = "info") {
   notification.textContent = message;
   document.body.appendChild(notification);
 
-  // Auto remove after 5 seconds
   setTimeout(() => {
     if (notification.parentNode) {
       notification.style.animation = "slideOut 0.3s ease-in";
@@ -258,7 +318,6 @@ function showNotification(message, type = "info") {
   }, 5000);
 }
 
-// Add CSS for notifications
 const notificationStyles = `
 @keyframes slideIn {
     from {
@@ -283,7 +342,6 @@ const notificationStyles = `
 }
 `;
 
-// Inject styles
 const styleSheet = document.createElement("style");
 styleSheet.textContent = notificationStyles;
 document.head.appendChild(styleSheet);

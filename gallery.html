@@ -85,11 +85,8 @@
           </button>
         </div>
 
-        <div class="gallery-grid" id="galleryGrid">
-          <!-- Photos will be loaded by JavaScript -->
-        </div>
+        <div class="gallery-grid" id="galleryGrid"></div>
 
-        <!-- Upload Section -->
         <div class="upload-section">
           <h3><i class="fas fa-cloud-upload-alt"></i> Tambah Foto Baru</h3>
           <form id="uploadForm" enctype="multipart/form-data">
@@ -128,11 +125,35 @@
       </div>
     </section>
 
-    <!-- Modal untuk gambar galeri -->
     <div id="imageModal" class="modal">
       <span class="close">&times;</span>
       <img class="modal-content" id="modalImage" />
       <div id="modalCaption"></div>
+    </div>
+
+    <div id="deleteModal" class="modal">
+      <div class="modal-content" style="max-width: 400px; text-align: center">
+        <h3 style="margin-bottom: 1rem; color: #2c5530">Hapus Foto</h3>
+        <p style="margin-bottom: 2rem">
+          Apakah Anda yakin ingin menghapus foto ini?
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center">
+          <button
+            id="confirmDelete"
+            class="btn-danger"
+            style="padding: 0.5rem 1.5rem"
+          >
+            <i class="fas fa-trash"></i> Ya, Hapus
+          </button>
+          <button
+            id="cancelDelete"
+            class="btn-secondary"
+            style="padding: 0.5rem 1.5rem"
+          >
+            <i class="fas fa-times"></i> Batal
+          </button>
+        </div>
+      </div>
     </div>
 
     <footer class="footer">

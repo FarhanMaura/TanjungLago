@@ -7,16 +7,13 @@ const fs = require("fs");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files
 app.use(express.static(__dirname));
 app.use("/public", express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Database setup
 const db = new sqlite3.Database("./database/desa.db", (err) => {
   if (err) {
     console.error("Error opening database:", err.message);
@@ -26,9 +23,7 @@ const db = new sqlite3.Database("./database/desa.db", (err) => {
   }
 });
 
-// Initialize database tables
 function initDatabase() {
-  // Photos table
   db.run(
     `CREATE TABLE IF NOT EXISTS photos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,7 +41,6 @@ function initDatabase() {
     }
   );
 
-  // Contact messages table
   db.run(
     `CREATE TABLE IF NOT EXISTS messages (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,7 +59,6 @@ function initDatabase() {
     }
   );
 
-  // Desa data table
   db.run(
     `CREATE TABLE IF NOT EXISTS desa_data (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -107,7 +100,6 @@ function insertInitialData() {
   console.log("Initial data inserted");
 }
 
-// Buat folder yang diperlukan
 const folders = ["./database", "./uploads", "./public/css", "./public/js"];
 folders.forEach((folder) => {
   if (!fs.existsSync(folder)) {
@@ -116,7 +108,6 @@ folders.forEach((folder) => {
   }
 });
 
-// Multer configuration untuk file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./uploads");
@@ -141,13 +132,10 @@ const upload = multer({
     }
   },
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
+    fileSize: 5 * 1024 * 1024,
   },
 });
 
-// API Routes
-
-// Get all photos
 app.get("/api/photos", (req, res) => {
   const limit = req.query.limit;
   let query = "SELECT * FROM photos ORDER BY upload_date DESC";
@@ -174,7 +162,6 @@ app.get("/api/photos", (req, res) => {
   });
 });
 
-// Upload photo
 app.post("/api/upload", upload.single("photo"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
@@ -183,7 +170,6 @@ app.post("/api/upload", upload.single("photo"), (req, res) => {
   const { title, category } = req.body;
 
   if (!title || !category) {
-    // Hapus file yang sudah diupload jika validasi gagal
     if (req.file) {
       fs.unlinkSync(req.file.path);
     }
@@ -195,7 +181,6 @@ app.post("/api/upload", upload.single("photo"), (req, res) => {
     [title, category, req.file.filename],
     function (err) {
       if (err) {
-        // Hapus file jika database error
         if (req.file) {
           fs.unlinkSync(req.file.path);
         }
@@ -210,7 +195,41 @@ app.post("/api/upload", upload.single("photo"), (req, res) => {
   );
 });
 
-// Get desa statistics
+app.delete("/api/photos/:id", (req, res) => {
+  const photoId = req.params.id;
+
+  db.get("SELECT filename FROM photos WHERE id = ?", [photoId], (err, row) => {
+    if (err) {
+      console.error("Error fetching photo:", err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (!row) {
+      return res.status(404).json({ error: "Photo not found" });
+    }
+
+    const filename = row.filename;
+    const filePath = path.join(__dirname, "uploads", filename);
+
+    db.run("DELETE FROM photos WHERE id = ?", [photoId], function (err) {
+      if (err) {
+        console.error("Error deleting photo from database:", err);
+        return res.status(500).json({ error: err.message });
+      }
+
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error("Error deleting file:", err);
+          return res.json({
+            message: "Photo deleted from database (file deletion failed)",
+          });
+        }
+        res.json({ message: "Photo deleted successfully" });
+      });
+    });
+  });
+});
+
 app.get("/api/statistics", (req, res) => {
   db.all("SELECT key, value FROM desa_data", (err, rows) => {
     if (err) {
@@ -228,7 +247,6 @@ app.get("/api/statistics", (req, res) => {
   });
 });
 
-// Submit contact message (backup ke database)
 app.post("/api/contact", (req, res) => {
   const { name, email, subject, message } = req.body;
 
@@ -249,7 +267,6 @@ app.post("/api/contact", (req, res) => {
   );
 });
 
-// Route untuk halaman HTML
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
@@ -270,7 +287,6 @@ app.get("/contact.html", (req, res) => {
   res.sendFile(path.join(__dirname, "contact.html"));
 });
 
-// Error handling middleware
 app.use((error, req, res, next) => {
   console.error("Server error:", error);
   if (error instanceof multer.MulterError) {
@@ -281,7 +297,6 @@ app.use((error, req, res, next) => {
   res.status(500).json({ error: error.message });
 });
 
-// Handle 404
 app.use((req, res) => {
   res.status(404).send(`
         <!DOCTYPE html>
@@ -304,14 +319,12 @@ app.use((req, res) => {
     `);
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📁 Upload directory: ./uploads/`);
   console.log(`💾 Database: ./database/desa.db`);
 });
 
-// Handle graceful shutdown
 process.on("SIGINT", () => {
   console.log("\n🛑 Shutting down server...");
   db.close((err) => {
