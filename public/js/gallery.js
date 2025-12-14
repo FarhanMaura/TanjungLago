@@ -23,24 +23,33 @@ async function loadGallery() {
         id: 1,
         title: "Pemandangan Desa",
         category: "wisata",
+        activity_date: "2023-12-01",
+        description: "Pemandangan indah di sore hari yang menenangkan hati.",
         url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
       },
       {
         id: 2,
         title: "Aktivitas Nelayan",
         category: "aktivitas",
+        activity_date: "2023-11-20",
+        description:
+          "Para nelayan sedang mempersiapkan jaring untuk menangkap ikan.",
         url: "https://images.unsplash.com/photo-1576675466969-38eeae4b41f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
       },
       {
         id: 3,
         title: "Kerupuk Kemplang",
         category: "produk",
+        activity_date: "2023-10-15",
+        description: "Proses pembuatan kerupuk kemplang khas desa.",
         url: "https://images.unsplash.com/photo-1587336764377-1eb53f6d80a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
       },
       {
         id: 4,
         title: "Sawah Desa",
         category: "wisata",
+        activity_date: "2023-09-05",
+        description: "Hamparan sawah hijau yang membentang luas.",
         url: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
       },
     ];
@@ -87,19 +96,40 @@ function displayGallery(filter) {
     const galleryItem = document.createElement("div");
     galleryItem.className = "gallery-item";
     galleryItem.setAttribute("data-category", item.category);
+
+    const date = item.activity_date
+      ? new Date(item.activity_date).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : "-";
+
     galleryItem.innerHTML = `
-            <img src="${item.url}" alt="${item.title}" loading="lazy">
-            <div class="gallery-item-overlay">
-                <h4>${item.title}</h4>
-                <span>${item.category}</span>
-                <div class="gallery-actions">
-                    <button class="view-btn" onclick="openModal('${item.url}', '${item.title}')" title="Lihat Foto">
-                        <i class="fas fa-expand"></i>
-                    </button>
-                    <button class="delete-btn" onclick="openDeleteModal(${item.id})" title="Hapus Foto">
-                        <i class="fas fa-trash"></i>
-                    </button>
+            <div class="gallery-img-container">
+                <img src="${item.url}" alt="${item.title}" loading="lazy">
+                <div class="gallery-overlay-actions">
+                    <button class="action-btn view" onclick="openModal('${
+                      item.url
+                    }', '${
+      item.title
+    }')" title="Lihat"><i class="fas fa-expand"></i></button>
+                    <button class="action-btn delete" onclick="openDeleteModal(${
+                      item.id
+                    })" title="Hapus"><i class="fas fa-trash"></i></button>
                 </div>
+                <span class="category-badge ${item.category}">${
+      item.category
+    }</span>
+            </div>
+            <div class="gallery-content">
+                <div class="gallery-meta">
+                    <i class="far fa-calendar-alt"></i> ${date}
+                </div>
+                <h4>${item.title}</h4>
+                <p class="gallery-desc">${
+                  item.description || "Tidak ada deskripsi"
+                }</p>
             </div>
         `;
     galleryGrid.appendChild(galleryItem);
@@ -116,9 +146,11 @@ function initUploadForm() {
       const fileInput = document.getElementById("photoInput");
       const title = document.getElementById("photoTitle").value;
       const category = document.getElementById("photoCategory").value;
+      const date = document.getElementById("photoDate").value;
+      const description = document.getElementById("photoDescription").value;
 
-      if (!fileInput.files[0] || !title || !category) {
-        alert("Harap lengkapi semua field!");
+      if (!fileInput.files[0] || !title || !category || !date) {
+        alert("Harap lengkapi field wajib (Foto, Judul, Kategori, Tanggal)!");
         return;
       }
 
@@ -131,6 +163,8 @@ function initUploadForm() {
       formData.append("photo", fileInput.files[0]);
       formData.append("title", title);
       formData.append("category", category);
+      formData.append("activity_date", date);
+      formData.append("description", description);
 
       try {
         const response = await fetch("/api/upload", {

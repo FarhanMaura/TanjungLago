@@ -116,10 +116,22 @@
                   <option value="infrastruktur">Infrastruktur</option>
                 </select>
               </div>
-              <button type="submit" class="upload-btn">
-                <i class="fas fa-upload"></i> Upload Foto
-              </button>
+              <div class="form-group">
+                <label for="photoDate">Tanggal Kegiatan</label>
+                <input type="date" id="photoDate" required />
+              </div>
             </div>
+            <div class="form-group">
+              <label for="photoDescription">Deskripsi</label>
+              <textarea
+                id="photoDescription"
+                placeholder="Deskripsi kegiatan..."
+                rows="3"
+              ></textarea>
+            </div>
+            <button type="submit" class="upload-btn">
+              <i class="fas fa-upload"></i> Upload Foto
+            </button>
           </form>
         </div>
       </div>

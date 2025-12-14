@@ -28,6 +28,8 @@ function initDatabase() {
     `CREATE TABLE IF NOT EXISTS photos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
+        description TEXT,
+        activity_date TEXT,
         category TEXT NOT NULL,
         filename TEXT NOT NULL,
         upload_date DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -37,6 +39,13 @@ function initDatabase() {
         console.error("Error creating photos table:", err);
       } else {
         console.log("Photos table ready");
+        // Migration: Add columns if they usually don't exist in old DB
+        const columnsToAdd = ["description TEXT", "activity_date TEXT"];
+        columnsToAdd.forEach((col) => {
+          db.run(`ALTER TABLE photos ADD COLUMN ${col}`, (err) => {
+            // Ignore error if column already exists
+          });
+        });
       }
     }
   );
@@ -138,7 +147,7 @@ const upload = multer({
 
 app.get("/api/photos", (req, res) => {
   const limit = req.query.limit;
-  let query = "SELECT * FROM photos ORDER BY upload_date DESC";
+  let query = "SELECT * FROM photos ORDER BY activity_date DESC, upload_date DESC";
   let params = [];
 
   if (limit) {
@@ -167,7 +176,7 @@ app.post("/api/upload", upload.single("photo"), (req, res) => {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  const { title, category } = req.body;
+  const { title, category, description, activity_date } = req.body;
 
   if (!title || !category) {
     if (req.file) {
@@ -177,8 +186,8 @@ app.post("/api/upload", upload.single("photo"), (req, res) => {
   }
 
   db.run(
-    "INSERT INTO photos (title, category, filename) VALUES (?, ?, ?)",
-    [title, category, req.file.filename],
+    "INSERT INTO photos (title, category, description, activity_date, filename) VALUES (?, ?, ?, ?, ?)",
+    [title, category, description || "", activity_date || null, req.file.filename],
     function (err) {
       if (err) {
         if (req.file) {
