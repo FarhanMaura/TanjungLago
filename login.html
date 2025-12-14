@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - Desa Tanjung Lago</title>
+    <link rel="stylesheet" href="/public/css/style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="nav-container">
+          <div class="nav-logo">
+            <a href="/" class="logo-link">
+              <div class="logo-icon">
+                <i class="fas fa-tree"></i>
+              </div>
+              <div class="logo-text">
+                <h2>Desa Tanjung Lago</h2>
+                <span>Kabupaten Banyuasin</span>
+              </div>
+            </a>
+          </div>
+          <ul class="nav-menu">
+            <li class="nav-item">
+              <a href="/" class="nav-link">
+                <i class="fas fa-home"></i>
+                Beranda
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/about.html" class="nav-link">
+                <i class="fas fa-info-circle"></i>
+                Tentang
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/gallery.html" class="nav-link">
+                <i class="fas fa-images"></i>
+                Galeri
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/statistics.html" class="nav-link">
+                <i class="fas fa-chart-bar"></i>
+                Statistik
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/contact.html" class="nav-link">
+                <i class="fas fa-envelope"></i>
+                Kontak
+              </a>
+            </li>
+          </ul>
+          <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <div class="login-container">
+      <div class="login-box">
+        <div class="login-header">
+          <div class="login-icon">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <h2>Admin Login</h2>
+          <p>Masuk untuk mengelola galeri desa</p>
+        </div>
+
+        <form id="loginForm" class="login-form">
+          <div class="form-group">
+            <label for="username">
+              <i class="fas fa-user"></i>
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Masukkan username"
+              required
+              autocomplete="username"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">
+              <i class="fas fa-lock"></i>
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Masukkan password"
+              required
+              autocomplete="current-password"
+            />
+          </div>
+
+          <div id="errorMessage" class="error-message" style="display: none;">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorText"></span>
+          </div>
+
+          <button type="submit" class="login-btn" id="loginBtn">
+            <i class="fas fa-sign-in-alt"></i>
+            Masuk
+          </button>
+        </form>
+
+        <div class="login-footer">
+          <p>
+            <i class="fas fa-info-circle"></i>
+            Hanya admin yang memiliki akses
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="/public/js/main.js"></script>
+    <script src="/public/js/login.js"></script>
+  </body>
+</html>

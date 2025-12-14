@@ -1,11 +1,15 @@
 let galleryData = [];
 let currentDeleteId = null;
+let currentEditId = null;
+let isAdmin = false;
 
 document.addEventListener("DOMContentLoaded", function () {
+  checkAuthStatus();
   loadGallery();
   initGalleryFilters();
   initUploadForm();
   initModal();
+  initAuthNav();
 });
 
 async function loadGallery() {
@@ -18,42 +22,55 @@ async function loadGallery() {
     displayGallery("all");
   } catch (error) {
     console.error("Error loading gallery:", error);
-    galleryData = [
-      {
-        id: 1,
-        title: "Pemandangan Desa",
-        category: "wisata",
-        activity_date: "2023-12-01",
-        description: "Pemandangan indah di sore hari yang menenangkan hati.",
-        url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
-      },
-      {
-        id: 2,
-        title: "Aktivitas Nelayan",
-        category: "aktivitas",
-        activity_date: "2023-11-20",
-        description:
-          "Para nelayan sedang mempersiapkan jaring untuk menangkap ikan.",
-        url: "https://images.unsplash.com/photo-1576675466969-38eeae4b41f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
-      },
-      {
-        id: 3,
-        title: "Kerupuk Kemplang",
-        category: "produk",
-        activity_date: "2023-10-15",
-        description: "Proses pembuatan kerupuk kemplang khas desa.",
-        url: "https://images.unsplash.com/photo-1587336764377-1eb53f6d80a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
-      },
-      {
-        id: 4,
-        title: "Sawah Desa",
-        category: "wisata",
-        activity_date: "2023-09-05",
-        description: "Hamparan sawah hijau yang membentang luas.",
-        url: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
-      },
-    ];
+    galleryData = [];
     displayGallery("all");
+  }
+}
+
+// Check authentication status
+async function checkAuthStatus() {
+  try {
+    const response = await fetch("/api/auth/check");
+    const data = await response.json();
+    isAdmin = data.authenticated;
+    updateUIForAuth();
+  } catch (error) {
+    console.error("Error checking auth:", error);
+    isAdmin = false;
+    updateUIForAuth();
+  }
+}
+
+// Update UI based on authentication
+function updateUIForAuth() {
+  const uploadSection = document.querySelector(".upload-section");
+  const authNavItem = document.getElementById("authNavItem");
+  const authNavLink = document.getElementById("authNavLink");
+  const authIcon = document.getElementById("authIcon");
+  const authText = document.getElementById("authText");
+
+  if (authNavItem) {
+    authNavItem.style.display = "block";
+  }
+
+  if (isAdmin) {
+    // Show upload section for admin
+    if (uploadSection) {
+      uploadSection.style.display = "block";
+    }
+    
+    // Update nav to show logout
+    if (authIcon) authIcon.className = "fas fa-sign-out-alt";
+    if (authText) authText.textContent = "Logout";
+  } else {
+    // Hide upload section for non-admin
+    if (uploadSection) {
+      uploadSection.style.display = "none";
+    }
+    
+    // Update nav to show login
+    if (authIcon) authIcon.className = "fas fa-sign-in-alt";
+    if (authText) authText.textContent = "Login";
   }
 }
 
@@ -105,6 +122,16 @@ function displayGallery(filter) {
         })
       : "-";
 
+    // Show edit/delete buttons only for admin
+    const adminButtons = isAdmin
+      ? `<button class="action-btn edit" onclick="openEditModal(${
+          item.id
+        })" title="Edit"><i class="fas fa-edit"></i></button>
+         <button class="action-btn delete" onclick="openDeleteModal(${
+           item.id
+         })" title="Hapus"><i class="fas fa-trash"></i></button>`
+      : "";
+
     galleryItem.innerHTML = `
             <div class="gallery-img-container">
                 <img src="${item.url}" alt="${item.title}" loading="lazy">
@@ -114,9 +141,7 @@ function displayGallery(filter) {
                     }', '${
       item.title
     }')" title="Lihat"><i class="fas fa-expand"></i></button>
-                    <button class="action-btn delete" onclick="openDeleteModal(${
-                      item.id
-                    })" title="Hapus"><i class="fas fa-trash"></i></button>
+                    ${adminButtons}
                 </div>
                 <span class="category-badge ${item.category}">${
       item.category
@@ -215,6 +240,7 @@ function initModal() {
   }
 
   initDeleteModal();
+  initEditModal();
 }
 
 function openModal(src, title) {
@@ -303,6 +329,160 @@ function initDeleteModal() {
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && deleteModal.style.display === "block") {
         closeDeleteModal();
+      }
+    });
+  }
+}
+
+// ============= EDIT MODAL =============
+
+function openEditModal(photoId) {
+  if (!isAdmin) {
+    showNotification("Hanya admin yang dapat mengedit foto", "error");
+    return;
+  }
+
+  const photo = galleryData.find((p) => p.id === photoId);
+  if (!photo) {
+    showNotification("Foto tidak ditemukan", "error");
+    return;
+  }
+
+  currentEditId = photoId;
+
+  // Populate form
+  document.getElementById("editPhotoId").value = photo.id;
+  document.getElementById("editPhotoTitle").value = photo.title;
+  document.getElementById("editPhotoCategory").value = photo.category;
+  document.getElementById("editPhotoDate").value = photo.activity_date || "";
+  document.getElementById("editPhotoDescription").value =
+    photo.description || "";
+
+  // Show modal
+  const editModal = document.getElementById("editModal");
+  if (editModal) {
+    editModal.style.display = "block";
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeEditModal() {
+  const editModal = document.getElementById("editModal");
+  if (editModal) {
+    editModal.style.display = "none";
+    document.body.style.overflow = "auto";
+    currentEditId = null;
+  }
+}
+
+function initEditModal() {
+  const editModal = document.getElementById("editModal");
+  const editForm = document.getElementById("editForm");
+  const closeEditBtn = document.querySelector(".close-edit");
+  const cancelEditBtn = document.getElementById("cancelEdit");
+
+  if (closeEditBtn) {
+    closeEditBtn.addEventListener("click", closeEditModal);
+  }
+
+  if (cancelEditBtn) {
+    cancelEditBtn.addEventListener("click", closeEditModal);
+  }
+
+  if (editForm) {
+    editForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const photoId = document.getElementById("editPhotoId").value;
+      const title = document.getElementById("editPhotoTitle").value;
+      const category = document.getElementById("editPhotoCategory").value;
+      const activity_date = document.getElementById("editPhotoDate").value;
+      const description = document.getElementById(
+        "editPhotoDescription"
+      ).value;
+
+      const submitBtn = editForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch(`/api/photos/${photoId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            category,
+            activity_date,
+            description,
+          }),
+        });
+
+        if (response.ok) {
+          showNotification("Foto berhasil diupdate!", "success");
+          closeEditModal();
+          loadGallery();
+        } else {
+          const error = await response.json();
+          showNotification("Error: " + error.error, "error");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        showNotification("Error updating photo: " + error.message, "error");
+      } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+  }
+
+  if (editModal) {
+    window.addEventListener("click", (e) => {
+      if (e.target === editModal) {
+        closeEditModal();
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && editModal.style.display === "block") {
+        closeEditModal();
+      }
+    });
+  }
+}
+
+// ============= AUTH NAV =============
+
+function initAuthNav() {
+  const authNavLink = document.getElementById("authNavLink");
+  
+  if (authNavLink) {
+    authNavLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+      
+      if (isAdmin) {
+        // Logout
+        try {
+          const response = await fetch("/api/auth/logout", {
+            method: "POST",
+          });
+          
+          if (response.ok) {
+            showNotification("Logout berhasil!", "success");
+            isAdmin = false;
+            updateUIForAuth();
+            loadGallery(); // Reload to hide edit/delete buttons
+          }
+        } catch (error) {
+          console.error("Logout error:", error);
+          showNotification("Error logout", "error");
+        }
+      } else {
+        // Redirect to login
+        window.location.href = "/login.html";
       }
     });
   }

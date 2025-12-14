@@ -3,12 +3,34 @@ const sqlite3 = require("sqlite3").verbose();
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const bcrypt = require("bcrypt");
+const session = require("express-session");
+const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable for now to allow inline scripts
+}));
+
+// Session configuration
+app.use(session({
+  secret: 'desa-tanjung-lago-secret-key-2025', // Change this in production
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: false, // Set to true in production with HTTPS
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
 
 app.use(express.static(__dirname));
 app.use("/public", express.static(path.join(__dirname, "public")));
@@ -84,6 +106,25 @@ function initDatabase() {
       }
     }
   );
+
+  // Admin users table
+  db.run(
+    `CREATE TABLE IF NOT EXISTS admin_users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        last_login DATETIME
+    )`,
+    (err) => {
+      if (err) {
+        console.error("Error creating admin_users table:", err);
+      } else {
+        console.log("Admin_users table ready");
+        createDefaultAdmin();
+      }
+    }
+  );
 }
 
 function insertInitialData() {
@@ -108,6 +149,52 @@ function insertInitialData() {
   });
   console.log("Initial data inserted");
 }
+
+// Create default admin user
+async function createDefaultAdmin() {
+  db.get("SELECT * FROM admin_users WHERE username = ?", ["admin"], async (err, row) => {
+    if (err) {
+      console.error("Error checking admin user:", err);
+      return;
+    }
+    
+    if (!row) {
+      // Create default admin with hashed password
+      const defaultPassword = "admin123";
+      const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+      
+      db.run(
+        "INSERT INTO admin_users (username, password_hash) VALUES (?, ?)",
+        ["admin", hashedPassword],
+        (err) => {
+          if (err) {
+            console.error("Error creating default admin:", err);
+          } else {
+            console.log("✅ Default admin created - Username: admin, Password: admin123");
+            console.log("⚠️  PLEASE CHANGE THE DEFAULT PASSWORD!");
+          }
+        }
+      );
+    } else {
+      console.log("Admin user already exists");
+    }
+  });
+}
+
+// Authentication middleware
+function requireAuth(req, res, next) {
+  if (req.session && req.session.adminId) {
+    return next();
+  }
+  return res.status(401).json({ error: "Unauthorized - Please login as admin" });
+}
+
+// Rate limiter for login attempts
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts
+  message: { error: "Too many login attempts, please try again later" }
+});
 
 const folders = ["./database", "./uploads", "./public/css", "./public/js"];
 folders.forEach((folder) => {
@@ -145,6 +232,84 @@ const upload = multer({
   },
 });
 
+// ============= AUTHENTICATION ENDPOINTS =============
+
+// Login endpoint
+app.post("/api/auth/login", loginLimiter, async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ error: "Username and password are required" });
+  }
+
+  db.get(
+    "SELECT * FROM admin_users WHERE username = ?",
+    [username],
+    async (err, user) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      if (!user) {
+        return res.status(401).json({ error: "Invalid username or password" });
+      }
+
+      try {
+        const passwordMatch = await bcrypt.compare(password, user.password_hash);
+        
+        if (!passwordMatch) {
+          return res.status(401).json({ error: "Invalid username or password" });
+        }
+
+        // Update last login
+        db.run(
+          "UPDATE admin_users SET last_login = CURRENT_TIMESTAMP WHERE id = ?",
+          [user.id]
+        );
+
+        // Set session
+        req.session.adminId = user.id;
+        req.session.username = user.username;
+
+        res.json({
+          success: true,
+          message: "Login successful",
+          username: user.username
+        });
+      } catch (error) {
+        console.error("Error comparing passwords:", error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    }
+  );
+});
+
+// Logout endpoint
+app.post("/api/auth/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ error: "Could not log out" });
+    }
+    res.json({ success: true, message: "Logged out successfully" });
+  });
+});
+
+// Check session endpoint
+app.get("/api/auth/check", (req, res) => {
+  if (req.session && req.session.adminId) {
+    res.json({
+      authenticated: true,
+      username: req.session.username
+    });
+  } else {
+    res.json({ authenticated: false });
+  }
+});
+
+// ============= GALLERY ENDPOINTS =============
+
+
 app.get("/api/photos", (req, res) => {
   const limit = req.query.limit;
   let query = "SELECT * FROM photos ORDER BY activity_date DESC, upload_date DESC";
@@ -171,7 +336,7 @@ app.get("/api/photos", (req, res) => {
   });
 });
 
-app.post("/api/upload", upload.single("photo"), (req, res) => {
+app.post("/api/upload", requireAuth, upload.single("photo"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
@@ -204,7 +369,7 @@ app.post("/api/upload", upload.single("photo"), (req, res) => {
   );
 });
 
-app.delete("/api/photos/:id", (req, res) => {
+app.delete("/api/photos/:id", requireAuth, (req, res) => {
   const photoId = req.params.id;
 
   db.get("SELECT filename FROM photos WHERE id = ?", [photoId], (err, row) => {
@@ -237,6 +402,36 @@ app.delete("/api/photos/:id", (req, res) => {
       });
     });
   });
+});
+
+// Update photo endpoint
+app.put("/api/photos/:id", requireAuth, (req, res) => {
+  const photoId = req.params.id;
+  const { title, description, category, activity_date } = req.body;
+
+  if (!title || !category) {
+    return res.status(400).json({ error: "Title and category are required" });
+  }
+
+  db.run(
+    "UPDATE photos SET title = ?, description = ?, category = ?, activity_date = ? WHERE id = ?",
+    [title, description || "", category, activity_date || null, photoId],
+    function (err) {
+      if (err) {
+        console.error("Error updating photo:", err);
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (this.changes === 0) {
+        return res.status(404).json({ error: "Photo not found" });
+      }
+
+      res.json({
+        success: true,
+        message: "Photo updated successfully"
+      });
+    }
+  );
 });
 
 app.get("/api/statistics", (req, res) => {
